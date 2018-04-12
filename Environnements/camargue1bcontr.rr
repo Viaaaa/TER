@@ -1,0 +1,180 @@
+EauNaturelle: 
+    Rh+: Rhone naturel
+    Ma+: Marais
+    EtgD+: Eau douce de l'etang
+    EtgS-: Eau salee de l'etang
+    LagD+: Eau douce de la lagune
+    LagS+: Eau salee de la lagune
+    NapS+: Nappe phreatique salee
+    Med+: Mer mediterannee naturelle
+
+EauAnthropisee: 
+    Can+: Canaux
+    Drai+: Drain
+    Pert+: Pertuits
+
+Atmosphere: 
+    Plu-: Pluie et rosee
+    Mis+: Vent Mistral
+    Mar-: Vent Marin
+    Ete+: Ete
+
+Anthropique: 
+    Hom+: Homme
+    Riz+: Riziere
+    Cult+: Culture
+    Pat+: Paturage
+    Sal+: Industrie saliniere
+    Patr+: Patrimoine
+    Tou+: Touriste, chasseur, pêcheur
+
+Faune: 
+    FaD+: Faune dulçaquicole
+    FaL+: Faune lagunaire
+    FaM+: Faune marine
+    FaT+: Faune terrestre
+    FaMi+: Faune migratrice (avifaune)
+
+Flore: 
+    Pel+: Pelouse
+    San+: Sansouires
+
+constraints:
+    #EauNaturelle
+    NapS+, LagD+ >> LagS+
+    #EauAnthropisee
+    Rh+ >> Can-
+    #Anthropique
+    Riz-, Cult-, Sal-, Pat-, Tou- >> Hom-
+    Hom- >> Riz-
+    Hom- >> Cult-
+    NapS+ >> Cult-
+    Rh-, Can+ >> Cult-
+    LagS- >> Sal-
+    Hom- >> Patr-
+    Patr-, FaMi-, FaD-, FaM-,FaL-, FaT- >> Tou-
+    Hom- >> Pat-
+    Pel-, Ma-, San- >> Pat-
+    #Faune
+    Ete+ >> FaMi-
+    EtgD-,EtgS- >> FaMi-
+    Ma- >> FaMi-
+    Ma-, EtgD-, LagD- >> FaD-
+    Ma-, EtgS+, LagD- >> FaD-
+    Ma-,EtgD-,LagS+ >> FaD-
+    Ma-,EtgS+,LagS+ >> FaD-
+    EtgS-,LagS- >> FaM-
+    EtgS+, EtgD- >> FaM+
+    LagS+, LagD- >> FaM+
+    EtgD+,LagS- >> FaM-
+    EtgD+,LagD+ >> FaM-
+    EtgS-,LagD+ >> FaM-
+    LagS- >> FaL-
+    LagD- >> FaL-
+    Pel-, Ma-, San- >> FaT-
+
+rules:
+    #EauNaturelle
+    Rh- >> Rh+, Can-
+    Rh+ >> Ma+
+    Rh-, Can- >> Ma+
+    Plu+ >> Ma+
+    Rh-, Can+, Ete+, Plu- >> Ma-, Pel+
+    Rh+ >> EtgD+
+    Plu+ >> EtgD+
+    Mis+, EtgD+ >> LagD+
+    EtgD+ >> EtgS-
+    EtgS+ >> EtgD-
+    Mis+, EtgS+ >> LagS+
+    Mar+, LagS+, LagD- >> EtgS+
+    Mar+, LagD+, LagS- >> EtgD+
+    Mar+, LagD+, LagS+ >> EtgD+, EtgS-
+    Med+ >> LagS+
+    #EauAnthropisee
+    Ete+, Med-, Pert+ >> LagS-, LagD-, San+
+    LagD+ >> LagS-
+    LagS+ >> LagD-
+    Plu+ >> LagD+
+    Plu-, Mar+ >> NapS+
+    Plu-, Mis+ >> NapS+
+    Plu+ >> NapS-
+    Rh+ >> NapS-
+    Rh-, Can- >> NapS-
+    Med- >> Med+, Pert-
+    Hom+ >> Rh-
+    Hom- >> Rh+, Can-
+    Hom- >> Can-
+    Can+ >> Can-
+    Rh-, Can- >> EtgD+
+    Hom- >> Drai-
+    Drai+ >> Drai-
+    Riz+, Ete+ >> Can-, Drai+
+    Riz+, Ete- >> Can+, Drai-
+    Tou+ >> Can-, Drai+
+    Drai- >> EtgD+
+    Drai- >> EtgD-
+    Hom+ >> Med-
+    Hom- >> Med+, Pert-
+    Sal+, Ete- >> Pert-
+    Sal+, Ete+ >> Pert+
+    Hom- >> Pert-
+    Pert+ >> Pert-
+    #Atmosphere
+    Ete+ >> Ete-
+    Plu+ >> Plu-
+    Plu- >> Plu+
+    Mar+ >> Mis+, Mar-
+    Mis+ >> Mar+, Mis-
+    #Anthropique
+    Hom+, Rh-, Can-, NapS+, Cult- >> Riz+
+    Rh-, Can+ >> Riz-
+    Ete-, Rh+ >> Cult-, Riz-
+    Hom+, Rh-, Can-, NapS-, Riz- >> Cult+
+    Ete-, Med+ >> Cult-, Riz-
+    LagS+, LagD-, Hom+ >> Sal+
+    Sal+ >> LagS-, LagD-
+    Pel+ >> Patr+
+    San+ >> Patr+
+    Pat+ >> Patr+
+    FaMi+ >> Tou+
+    FaD+ >> Tou+
+    FaM+ >> Tou+
+    FaL+ >> Tou+
+    FaT+ >> Tou+
+    Patr+ >> Tou+
+    Ete-, Hom+, Pel+ >> Pat+
+    Ete+, Hom+, Ma+ >> Pat+
+    Ete-, Hom+, San+ >> Pat+
+    Patr+ >> Pat+
+    #Faune
+    Ete-, EtgD+, Ma+ >> FaMi+
+    Ete-, EtgS+, Ma+ >> FaMi+
+    Tou+ >> FaMi-
+    Ma+ >> FaD+
+    EtgD+, EtgS- >> FaD+
+    LagD+, LagS- >> FaD+
+    Tou+ >> FaD-
+    Tou+ >> FaM-
+    LagS+,LagD+ >> FaL+
+    Tou+ >> FaL-
+    Pel+ >> FaT+
+    Ma+ >> FaT+
+    San+ >> FaT+
+    Tou+ >> FaT-
+    #Flore
+    Pel+, Pat- >> Pel-
+    Pat+ >> Pel-
+    Pel+ >> Riz+
+    Riz+ >> Pel-
+    Rh+ >> Pel-, Ma+
+    Plu+ >> Pel-, Ma+
+    NapS- >> Pel+
+    NapS+ >> Pel-, San+
+    FaT+ >> Pel-
+    Pat+ >> San-
+    Cult+ >> San-
+    Plu+ >> San-, LagD+
+    Med+ >> San-, LagD+
+    NapS+ >> San+
+    NapS- >> San-, Pel+
+

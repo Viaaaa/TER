@@ -1,0 +1,302 @@
+Atmosphere: 
+ Prin+: Printemps
+ Ete-: Ete
+ Aut-: Automne
+ Hiv-: Hivers
+ Plu-: Pluie
+ Vent+: Vent
+ EnsT+: Ensoleillement total de la mare
+ EnsB+: Ensoleillement des berges
+ EnsS+: Ensoleillement a la surface de l eau
+ EnsF+: Ensoleillement au fond de l eau
+
+Soil: 
+ DebV-: Debris vegetaux
+ Sed-: Sediment en suspension
+ DJ-: Dejections
+
+Fauna: 
+ PeloC-: Pelobate cultripede (Pelobates cultripes)
+ Odo-: Odonates
+ Lest-: Lestes macrostigma
+ Ish-: Isnhura pumilio
+ Sang-: Sangliers
+ Anat-: Anatidae granivores lies aux milieux cultives (Canard colvert et sarcelle d’hiver) + Anatidae omnivores (fuligule milouin)+ oies
+
+Flora:
+ Hydro+: Hydrophytes 
+ Zan-: Zannichellies
+ BGZan-: Banque de graines des Zannichellies
+ Chara-: Characees (Chara sp  et Tolypella sp)
+ SChara-: Banque de spore des chara sp.
+ Helo+: Helophytes
+ Ros+: Roseaux
+ ChaRos+: Parties charnues des roseaux
+ Sci-: Scirpe
+ ChaSci-: Parties charnues des scirpes
+ BGSci-: Banque de graines des scirpes
+ Jonc-: Jonc
+ BGJonc-: Banque de graines des joncs
+ ChaJonc-: Parties charnues des joncs
+ Herb-: Herbacees
+ Lyth-: Lythrum tribracteatum
+ BGLyth-: Banque de graines du Lythrum tribracteatum
+ Pul-: Pulicaria sicula
+ BGPul-: Banque de graine de Pulicaria sicula
+ Riel-: Riella helicophylla (hepatique)
+ SRiel-: Spores de Riella helicophylla
+ Dam-: Damasonium (vegetation amphibie)
+ BGDam-: Banque de graine des damaosnium
+ Lign-: Ligneux
+ Fil-: Fialire
+ BGFil-: Banque de graine des filiaires
+
+Human: 
+ Ges+: Gestionnaire
+ Drai-: Drainage
+ Af-: Affourage
+ Bov-: Bovins
+ Eq-: Equins
+ Cap-: Caprins
+ Ov-: Ovins
+ Agr-: Agrainage
+ MC-: Gestion cynegetique (pour la chasse)
+ MIB-: Pâturage intensif bovin
+ MIE-: Pâturage intensif equins
+ MSB-: Pâturage saisonnier bovin
+ MSBE+: Pâturage saisonnier et mixte equins-bovins
+ MSM1-: Pâturage saisonnier et mixte equins-bovins-ovins
+
+Water: 
+ Nap+: Nappe phreatique
+ EI+: Eau interstitielle
+ ES+: Eau de surface
+ NapSm-: Milieu saumâtre
+ NapSl-: Milieu salin
+ AS1-: Assec de tres courte duree
+ AS2-: Assec de courte duree
+
+constraints:
+ Lign- >> EnsT+ # Sans les arbres, il y a plus de lumiere
+ EnsT+, EnsB+, Helo- >> EnsS+ # Sans les helophytes, il y a de la lumiere
+ EnsT+, EnsB+, EnsS+, Hydro- >> EnsF+ # Sans hydrophytes, il y a de la lumiere
+ ES- >> Sed- # La mise en assec permet d avacuer les depots de sediements (vase, etc.)
+ Chara-, Hydro-, DebV- >> PeloC- # La larve de pelobate cutripede se nourrit de vegetaux, d algues, de phanerogamme et de detrituts
+ Ete+, ES- >> PeloC- # Une chute du niveau d eau de la mare entraine la mort des larves de pelobates
+ Hiv+, ES- >> PeloC- # Une chute du niveau d eau  de la mare entraine la mort des larves de pelobates
+ Ete+, NapSl+ >> PeloC- # Les œufs de pelobates ne supportent pas une salinite superieure a 12 g/l
+ Lest+ >> Odo+ # Odonates
+ Ish+ >> Odo+ # Odonates
+ Odo- >> Lest-, Ish- # Odonates
+ Lest-, Ish- >> Odo-
+ Sed+ >> Lest- # La turbidite de l eau est deletaire pour le leste a grand sigma
+ ES+, Aut+ >> Lest- # Le leste, peu competitif, est elmine par les autres espece lorsqu il y a de l eau en automne
+ Ete+, ES+ >> Lest- # Le leste a grands sigma a besoin d un assec en ete (qui elimine les especes ubiquistes qui constituent ses competiteurs)
+ Aut+, ES+ >> Lest- # Le leste a grands sigma a besoin d un assec en automne (qui elimine les especes ubiquistes qui constituent ses competiteurs)
+ Helo- >> Ish- # Sans refuge pour se cacher, l ishnura est elminee par les autres especes de libellules
+ Bov+, MIB+ >> DJ+ # S il y a des animaux de la faune terrestre, alors il y a de la faune terrestre
+ Eq+, MIE+ >> DJ+ # S il y a des animaux de la faune terrestre, alors il y a de la faune terrestre
+ Helo-, Herb-, Af-, Agr- >> Sang- # S il n y a plus de ressources, le sanglier disparaît
+ Hiv+, BGSci-, ChaSci-, Chara-, Agr- >> Anat- # S il n y a pas de nourriture pour les anatidae granivore, il ne peuvent pas être presents
+ Ete+ >> Anat- # En dehors de l hivers, il n y a pas d anatidae
+ Ros+ >> Helo+ # Le roseau est un grand helophytes
+ Sci+ >> Helo+ # La scirpe est ungrand  helophyte
+ Jonc+ >> Helo+ # Le jonc est un petit helophyte
+ Dam+ >> Herb+ # Les damasonium appartiennent a la strate herbacee
+ Riel+ >> Herb+ # Les riella appartiennent a la strate herbacee
+ Lyth+ >> Herb+ # Les lythrum appartiennent a la strate herbacee
+ Zan+ >> Hydro+ # Les zannichellies sont des hydrophytes
+ Helo- >> Ros-, Sci-, Jonc- # 
+ Ros-, Sci-, Jonc->> Helo-
+ Herb- >> Dam-, Riel-, Lyth- # 
+ Dam-, Riel-, Lyth- >> Herb-
+ Hydro- >> Zan- #
+ DebV+ >> Chara- # Les characee sont des plantes de milieu pauvre (les débris végétaux enrichissent le sol)
+ DJ+ >> Chara- # Les characee sont des plantes de milieu pauvre (les débris végétaux enrichissent le sol)
+ Sed+ >> Chara- # Les characee ont besoin d une eau limpide 
+ Zan- >> Hydro-
+ EnsF- >> Chara- # S il n y a plus de lumiere dans le fond de la mare, les algues disparaissent
+ EnsS- >> Zan- # S il n y a pas assez de lumiere, les hydrophytes ne peuvent pas se developper
+ Ros-, Sci+, Jonc+ >> Jonc- # La scirpe remporte la competition sur le jonc
+ Ros+, Sci+, Jonc+ >> Sci-, Jonc- # Le roseau remporte lacompetition sur la scirpe et le jonc
+ Ros+ >> ChaRos+ # Les roseaux forment des parties charnues
+ Sci+ >> ChaSci+ # Les scirpes developpent des parties charnues
+ Ete+, ES+, DebV+ >> Sci- # Le scirpe necessite un assechement estival sinon l anaerobie causee par les debris vegetaux cause sa perte
+ Prin+, ES+, DebV+ >> Sci- # Le scirpe necessite un assechement printannier sinon l anaerobie causee par les debris vegetaux cause sa perte
+ Jonc+ >> ChaJonc+ # Les joncs produisent des parties charnues
+ Hiv+ >> Dam- # Plante annuelle
+ Aut+ >> Lyth- # Plante annuelle
+ Hiv+ >> Lyth- # Plante annuelle
+ EnsB- >> Riel- # Les riella sont des especes helophyles
+ NapSm+ >> Chara-, Ros-, Zan- # Les chara, les roseaux et les zannichellies sont tres intolerantes au sel
+ NapSl+ >> Jonc-, Sci-, Riel- # Les joncs sont intolerants a des valeurs moyennes de salinite
+ Ete+, EI-, Plu-, Vent+ >> Sci-, AS1+ #  Les scirpes ne resistent pas a un assechmeent prolonge de la mare
+ AS2+ >> Ros-#  Les roseaux ne resitent pas a un trop long assehement de la mare
+ ES- >> Zan- # Espece strictement aquatiques
+ EI- >> Riel-, Dam-, Sci-, Ros-, Jonc- # Especes amphibies
+ ES+ >> Lyth-, Pul-, Lign- # Les plantes terrestres ne supportent pas la submersion
+ EI+ >> Lign- # Les ligneux ne supportent pas l engorgement
+ Nap- >> Lyth-, Pul-, Lign- # Les plantes terrestres ont besoin de la nappe phreatique
+ Helo-, Herb-, Af- >> Bov- # Sans nourriture, les bovins ne peuvent pas se maintenir				
+ Helo-, Af- >> Eq- # Sans nourriture, les equins ne peuvent pas se maintenir				
+ Helo-, Herb-, Lign-, Af- >> Cap- # Sans nourriture, les caprins ne peuvent pas se maintenir				
+ Helo-, Herb-, Af- >> Ov- # Sans nourriture, les ovins ne peuvent pas se maintenir				
+ ES+ >> Ov-, Cap- # Les ovins et caprins ne peuvent pas pâturer si le niveau d eau est trop eleve				
+ MC+, Ete+ >> ES+ # La gestion cynegetique met les marais en eau en ete				
+ MC+, Aut+ >> ES+ # La gestion cynegetique met les marais en eau en automne				
+ MC+, Hiv+ >> ES+ # La gestion cynegetique met les marais en eau en hivers				
+ MIB+, Prin+ >> Bov+, Af+ # Pâturage des bovins en toutes saisons pour l elevage intensif et affourage				
+ MIB+, Ete+ >> Bov+, Af+ # Pâturage des bovins en toutes saisons pour l elevage intensif et affourage				
+ MIB+, Aut+ >> Bov+, Af+ # Pâturage des bovins en toutes saisons pour l elevage intensif et affourage				
+ MIB+, Hiv+ >> Bov+, Af+ # Pâturage des bovins en toutes saisons pour l elevage intensif et affourage				
+ MIE+, Prin+ >> Eq+, Af+ # Pâturage des equins en toutes saisons pour l elevage intensif et affourage				
+ MIE+, Ete+ >> Eq+, Af+ # Pâturage des equins en toutes saisons pour l elevage intensif et affourage				
+ MIE+, Aut+ >> Eq+, Af+ # Pâturage des equins en toutes saisons pour l elevage intensif et affourage				
+ MIE+, Hiv+ >> Eq+, Af+ # Pâturage des equins en toutes saisons pour l elevage intensif et affourage				
+ MSB+, Prin+ >> Bov+ # Pâturage des bovins sur les mares en periode de production vegetale
+ MSB+, Ete+ >> Bov+ # Pâturage des bovins sur les mares en periode de production vegetale
+ MSB+, Aut+ >> Bov- # Pâturage des bovins sur les pelouses en periode de diminution de la production vegetale
+ MSB+, Hiv+ >> Bov- # Pâturage des bovins sur les pelouses en periode de diminution de la production vegetale
+ MSBE+, Prin+ >> Bov+, Eq+ # Pâturage des bovins et equins sur les mares en periode de production vegetale
+ MSBE+, Ete+ >> Bov+, Eq+ # Pâturage des bovins et equins sur les mares en periode de production vegetale
+ MSBE+, Aut+ >> Bov-, Eq- # Pâturage des bovins et equins sur les pelouse en periode de diminution de la production vegetale
+ MSBE+, Hiv+ >> Bov-, Eq- # Pâturage des bovins et equins sur les pelouse en periode de diminution de la production vegetale
+ MSM1+, Prin+ >> Bov+, Eq+, Ov+ # Pâturage des bovins et equins sur les mares en periode de production vegetale
+ MSM1+, Ete+ >> Bov+, Eq+, Ov+ # Pâturage des bovins et equins sur les mares en periode de production vegetale
+ MSM1+, Aut+ >> Bov-, Eq-, Ov- # Pâturage des bovins et equins sur les pelouse en periode de diminution de la production vegetale
+ MSM1+, Hiv+ >> Bov-, Eq-, Ov- # Pâturage des bovins et equins sur les pelouse en periode de diminution de la production vegetale
+ Nap- >> EI-, ES- # Il faut d abord remplir la nappe phreatique avant de remplir les deux autres compartiements
+ EI- >> ES- # Il faut d abord rempli l eau interstitielle avant d avoir de l eau de surface
+ Plu+ >> AS1-, AS2- #  La pluie signifie la fin de l'assec
+
+rules:
+ Prin+ >> Ete+, Prin- # Apres le printemps, l ete
+ Ete+ >> Aut+, Ete- # Apres l ete, l automne
+ Aut+ >> Hiv+, Aut- # Apres l automne, l hivers
+ Hiv+ >> Prin+, Hiv- # Apres l hivers, le printemps
+ Plu+ >> Plu- # Apres la pluie, le beau temps
+ Plu- >> Plu+ # Apres le beau temps, la pluie
+ Vent+ >> Vent- # Le calme apres la tempête
+ Vent- >> Vent+ # La tempête apres le calme
+ Lign+ >> EnsT-, EnsB-, EnsS-, EnsF- # Les arbres creent de l ombre sur toute la mare
+ Helo+ >> EnsS- # Les helophytes creent de l ombre sur les berges
+ Hydro+ >> EnsF- # Les hydrophytes creent de l ombre
+ ES-, EI-, Vent+ >> DebV- # Elimination des debris vegetaux
+ Sang+ >> Sed+ # Les sangliers retournent le sol et generent des sediments en suspension
+ Vent+ >> Sed+ # Les vents forts provoquent la remise en suspension des sediments
+ Bov+ >> Sed+ # Les bovins provoquent la remise en suspension des sediments
+ Eq+ >> Sed+ # Les equins provoquent la remise en supension des sediments
+ Hiv+, Plu+, ES+ >> PeloC+ # Reproduction du pelobate lors des pluies hivernales
+ Prin+, Plu+, ES+ >> PeloC+ # Reproduction du pelobate lors des pluies printannieres
+ Ete+, Odo+ >> PeloC- # Les larves de libellules predatent les larves de pelobates
+ Prin+, Sci+, ES+ >> Lest+ # Reproduction du leste a grand sigma au printemps (ponte dans les tiges de scirpes)
+ Prin+, Sci-, Jonc+, ES+ >> Lest+ # Reproduction du leste a grand sigma au printemps (ponte dans les tige de jonc en absence de scirpes)
+ Ete+, Sci-, Jonc- >> Lest- # Si les scirpes et les joncs disparaissent avant l emergence des larves, la population de leste ne se maintient pas
+ Aut+, Sci-, Jonc- >> Lest- # Si les scirpes et les joncs disparaissent avant l emergence des larves, la population de leste ne se maintient pas
+ Hiv+, Sci-, Jonc- >> Lest- # Si les scirpes et les joncs disparaissent avant l emergence des larves, la population de leste ne se maintient pas
+ Hiv+, ES- >> Lest- # Une mise en eau trop tardive de la mare provooque la mort des states larvaires du leste a grand sigma
+ Aut+, Jonc+, EnsS+, ES+ >> Ish+ # Ponte des ishnura dans les tiges de joncs (premiere generation)
+ Aut+, Sci+, EnsS+, ES+ >> Ish+ # Ponte des ishnura dans les tiges de scirpes (premiere generation)
+ Prin+, Jonc+, EnsS+, ES+ >> Ish+ # Ponte des ishnura dans les tiges de joncs (seconde generation)
+ Prin+, Sci+, EnsS+, ES+ >> Ish+ # Ponte des ishnura dans les tiges de scirpes (seconde generation)
+ Plu+ >> Ish- # Espece tres grêle
+ Prin+, ES- >> Ish- # Mort des larves et œufs si long assechement printannier
+ Helo+, ES- >> Sang+ # Le sanglier est attire par les ressources de la mare
+ Herb+, ES- >> Sang+ # Le sanglier est attire par les ressources de la mare
+ Af+, ES- >> Sang+ # Le sanglier est attire par les ressources de la mare
+ Agr+, ES- >> Sang+ # Le sanglier est attire par les ressources de la mare
+ Hiv+ >> Anat+ # Les oiseaux migrateurs viennent se reposer en hivers en Camargue
+ Anat+, BGSci- >> Chara- # Les anatidae granivores consomment les characeae
+ Ete+, EnsF+, Chara+ >> SChara+ # Les chara sp fructifient en ete
+ Aut+, ES+, EnsF+, SChara+ >> Chara+ # Developpement des chara sp en automne
+ Prin+, EnsF+, Chara+ >> SChara+ # Les tolypella fructifient au printemps
+ Anat+ >> SChara+ # Les anatidae participent a la dispersion des graines de characees
+ Aut+, ES+, EnsS+, BGZan+ >> Zan+ # Les Zannichellies germent des l automne						
+ Prin+, Zan+, EnsS+, ES+ >> BGZan+ # Reproduction des Zannichellies au pritnemps						
+ Aut+, ES+, EnsS+, Zan+ >> BGZan+ # Production precoce de graine par les Zannichellies						
+ Aut+, ES-, EI+, Bov+ >> BGZan+ # Bouleversement du sols par les annimaux menant a la mise a jour de graines enfouises dans le sol
+ Aut+, ES-, EI+, Sci-, Sang+ >> ChaRos- # Les sangliers mangent le sparties charnues des roseaux						
+ Prin+, ES-, EI+, Sci-, Sang+ >> ChaRos- # Les sangliers mangent le sparties charnues des roseaux						
+ Prin+, Bov+ >> Ros-, ChaRos- # Les roseaux sont pâtures par les bovins lorsqu ils sont verts (printemps et ete) - le pâturage au printemps empêche la repousse		
+ Ete+, Bov+ >> Ros- # Les roseaux sont pâtures par les bovins lorsqu ils sont verts (printemps et ete)						
+ Prin+, Eq+ >> Ros-, ChaRos- # Les roseaux sont pâtures par les equins lorsqu ils sont verts (printemps et ete) - le pâturage au printemps empêche la repousse		
+ Ete+, Eq+ >> Ros- # Les roseaux sont pâtures par les equins lorsqu ils sont verts (printemps et ete)						
+ Prin+, Ov+, Herb- >> Ros- # Les roseaux sont pâtures par les ovins lorsqu ils sont verts (printemps et ete)						
+ Ete+, Ov+, Herb- >> Ros- # Les roseaux sont pâtures par les ovins lorsqu ils sont verts (printemps et ete)						
+ Prin+, ES+, ChaRos+, EnsT+ >> Ros+ # Recrutement des parties charnues des roseaux						
+ DebV+ >> Ros- # L accumulation des debris vegetaux entraîne un manque d oxygene deletaire pour les roseaux						
+ Ete+, EI+, Vent+ >> BGSci+ # Le vent disperse les graines de scirpes						
+ Ete+, EnsT+, Sci+ >> BGSci+ # Les scirpes fructifient en ete						
+ Prin+, ChaSci+, ES+, EnsT+ >> Sci+ # Recrutement des parties charnues des scirpes						
+ Prin+, BGSci+, ES+, EnsT+ >> Sci+ # Recrutement de la banque de graines des scirpes						
+ Aut+, ES+, Sci+, Ros+ >> Sci- # Le maintien tardif de l eau defavorise le scirpe qui est alors emplace par le roseau						
+ Hiv+, ES+, Sci+, Ros+ >> Sci- # Le maintien tardif de l eau defavorise le scirpe qui est alors emplace par le roseau			
+ Aut+, Anat+ >> BGSci-, ChaSci- # Les anatidae se nourrissent des graines et des tubercule de scirpes						
+ Prin+, Anat+ >> BGSci-, Sci-,ChaSci- # Les anatidae de toutes les parties des scirpes						
+ Aut+, ES-, EI+, Sang+ >> ChaSci- # Les scirpes sont moins appetants que les roseaux et sont pâtures par les bovins au printemps et en ete
+ Prin+, ES-, EI+, Sang+ >> ChaSci- # Les niveau d eau faible au printemps rendent les scirpes accessibles aux sangliers qui les pâturent
+ Prin+, Ros-, Bov+ >> Sci- # Les scirpes sont moins appetants que les roseaux et sont pâtures par les bovins au printemps et en ete
+ Ete+, Ros-, Bov+ >> Sci- # Les scirpes sont moins appetants que les roseaux et sont pâtures par les bovins au printemps et en ete
+ Prin+, Ros-, Eq+ >> Sci- # Les scirpes sont moins appetants que les roseaux et sont pâtures par les equins au printemps et en ete
+ Ete+, Ros-, Eq+ >> Sci- # Les scirpes sont moins appetants que les roseaux et sont pâtures par les equins au printemps et en ete
+ Prin+, Ov+ >> Sci- # Les scirpes sont pâtures par les ovins au printemps et en ete
+ Ete+, Ov+ >> Sci- # Les scirpes sont pâtures par les ovins au printemps et en ete
+ Ete+, EnsB+, EI+, Jonc+ >> BGJonc+ # Production de graines en ete
+ Aut+, EnsB+, ES-, EI+, BGJonc+ >> Jonc+ # Les joncs germent a l automne des que le sol nu est humide ou sature en eau
+ Aut+, EnsB+, ES-, EI+, ChaJonc+ >> Jonc+ # Les joncs reprennent a l automne des que le sol nu est humide ou sature en eau
+ Ete+, Anat+ >> BGJonc+ # Les Anatidae disperse les graines de joncs
+ Ete+, Sang+, ES-, EI+ >> BGJonc+ # Les sangliers dispersent les graines de joncs
+ Aut+, NapSl+ >> BGJonc- # La germination est affectee par une forte salinite en automne
+ Hiv+, Anat+ >> BGJonc- # Les anatidae se nourissent de graines de joncs
+ Bov+, Ros-, Sci- >> Jonc- # Les bovins mangent les juncaceae
+ Eq+, Ros-, Sci- >> Jonc- # Les equins mangent les juncaceae
+ Cap+, Lign- >> Jonc-, ChaJonc- # Les caprins mangent les juncaceae
+ Bov+, Ros-, Sci-, Jonc-, Fil- >> Herb- # Les bovins ne sourrisent egalement d herbacees (lorsqu elles ne sont pas recouvertes de filaire)
+ Cap+,Lign-, Jonc-, Fil- >> Herb- # Les caprins se nourrissent egalement d herbacees (lorsqu elles ne sont pas recouvertes de filaire)
+ Ov+, Fil- >> Herb- # Les ovins se nourrissent essentiellement d herbacees (lorsqu elles ne sont pas recouvertes de filaire)
+ Prin+, ES+, EnsB+, BGDam+ >> Dam+ # Germination en phase aquatique
+ Ete+, Dam+, ES-, EI+ >> BGDam+ # Fructification en ete
+ Ete+, Vent+ >> BGDam+ # Dispersion des graines par le vent
+ Sang+, ES- >> BGDam- # Les sangliers fouissent le sol et empêchent la germination des graines
+ Bov+ >> BGDam- # Les bovins pietinnent le sol et empêchent la germination des graines
+ Eq+ >> BGDam- # Les equins pietinnent le sol et empêchent la germination des graines
+ Prin+, Nap+, EI+, ES-, EnsB+, BGLyth+ >> Lyth+ # Les Lythrum germent au printemps
+ Ete+, Nap+, EI+, ES-, Lyth+ >> BGLyth+ # Les Lythrum se reproduisent au printemps
+ Prin+, Nap+, EI-, ES-, EnsB+, BGPul+ >> Pul+ # Les pulicaires germent au printemps
+ Aut+, Nap+, EI-, ES-, Pul+ >> BGPul+ # Les pulicaires se reproduisent a l automne
+ Aut+, EnsB+, ES+, SRiel+ >> Riel+ # Germination des riella
+ Prin+, ES+, Riel+ >> SRiel+ # Production de spores par les riellas
+ Prin+, ES+, Anat+ >> SRiel+ # Dispersion par les anatides
+ Prin+, EnsT+, Herb-, BGFil+ >> Fil+ # Germination au printemps si le couvert herbace n est pas trop developpe
+ Aut+, EnsT+, Fil+ >> BGFil+ # Graines arrrivent a maturiet en automne
+ Aut+, Anat+ >> BGFil+ # Dispersion par endozoochorie (Probl: le plus souvent, passeraux)
+ Hiv+, Ov+ >> Fil- # Les ovins mangent la filaire
+ Hiv+, Cap+, Lign- >> Fil- # Les caprins mangent la filaire
+ Cap+ >> Lign- # Les caprins mangent les ligneux
+ Hiv+, Eq+ >> Lign- # Ecorçage des ligneux en hivers
+ DebV+ >> Lign+ # Une forte teneur en azote favorise les ligneux (déjection de la faune terrestre)
+ MIB+, Bov+ >> Ros-, Sci+, Hydro-, Chara-, Lign+ # Un forte teneur en azote du sol detruit les roseaux, la vegetation amphibi, les hydrophytes et les algues  et favorise le scirpe et les scirpes
+ MIE+, Eq+ >> Ros-, Sci+, Hydro-, Chara-, Lign+ # Un forte teneur en azote du sol detruit les roseaux, la vegetation amphibi, les hydrophytes et les algues  et favorise le scirpe et les scirpes
+ DebV+ >> Ros-, Sci+, Hydro- # Un forte teneur en azote du sol detruit les roseaux, la vegetation amphibi et les hydrophiites et favorise le scirpe
+ MC+, Ete+ >> ES+, Ros-, Sci-, Jonc- # La gestion cynegetique favorise l ouverture des milieux
+ Drai+ >> ES-, EI-, Nap- # Le drainage des mares
+ Plu-, Vent+, Ete+ >> ES- # Evaporation de l eau de surface
+ Plu-, Vent+, Ete+ >> EI-, ES- # La secheresse prolongee provoque l evaporation de l eau intersticielle
+ Plu-, Vent+, Ete+ >> Nap-, EI-, ES-, NapSm+ # La secheresse prolongee provoque une augmentation du taux de salinite
+ Plu-, Vent+, Ete+, NapSm+ >> Nap-, EI-, ES-, NapSl+ # La secheresse prolongee sur sol saumâtre provoque une augmentation du taux de salinite
+ Plu+ >> Nap+, NapSm-, NapSl- # Les pluies remplissent les depressions et remplissent ainsi la nappe aquifere
+ Plu+ >> Nap+, EI+ # Les pluies remplissent les depressions et remplissent ainsi la nappe aquifere et l eau interstitielle
+ Plu+ >> Nap+, EI+, ES+ # Les pluies remplissent les depressions et remplissent ainsi la nappe aquifere, l eau interstitielle et l eau de surface - la mise en eau precoce favorise les hydrophytes
+ AS1+, EI-, Plu- >> AS2+ #  Allongement de la duree d assec
+
+
+# Poissons supprimé (ne dépend pas du pâturage) 
+# Suppression des jussies
+# Faune terrestre remplacée par déjection DJ et que quand intensif
+# Fusion des oies, anatidé omnivore et granivore sous le noeud Anat
+# Fusion des 6 niveaux de salinité en 2.
+# Fusion des chars sp et Tolypella sous Characeae
+# Suppression des massettes
+# Suppression Crypsis sp.
+
+

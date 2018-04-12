@@ -1,0 +1,20 @@
+nodes:
+    Ete+ : Ete
+    M+   : Mare
+    PP+  : Poisson piscivore
+    PI+  : Poisson insectivore
+
+# constraints:
+#     M- >> PP-, PI- # Sans mare, il n'y a pas de poisson 
+
+use "std.hld" :
+    PP, PI live in M
+
+rules :
+    # Processus climatiques
+    Ete+ >>  M- #  En été, la mare s'assèche
+    # Liens faune-habitat
+    M+ >> PP+, PI+ # Quand il y a la mare, il y a les poissons
+    # Liens trophiques
+    PP+ >> PI- # Le prédateur mange la proie
+    PI- >> PP- #  Sans proie, le prédateur meurt

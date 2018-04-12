@@ -1,0 +1,9 @@
+dummy:
+    A+: some sort A 
+    B+: some sort B
+    C+: some sort C
+    D-: some sort D
+    E-: some sort E
+
+rules:
+    A+, B+, C+ >> A+, B-, D-

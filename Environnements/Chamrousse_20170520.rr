@@ -1,0 +1,219 @@
+anthropic:
+ Aski+: Area alpine skiing
+ Art+: Artificial snow
+ Gap+: Gaps
+ Wact+: Others winter acitivies
+ Res+: Residents
+ Sact-: Summer activities
+ Tou+: Tourists
+ Woo+: Woods production
+
+atmosphere:
+ Win+: Winter atmosphere
+
+soil:
+ Fer+: Fertile Matter
+
+water:
+ Lak+: Alpine lakes
+ Sn+: Snow 
+ Wat+: Water stock
+
+flora:
+ Fd+: Flora of dense forest
+ Wflo-: Wild flora/Mushrooms
+
+fauna:
+ Fa+: Fauna 
+ FaD+: Fauna of dense forest
+
+naturalshabitats:
+ Bg+: Bog
+ Nf+: Dense natural forest
+ Mon+: Mountain
+
+constraints:
+ Woo+ >> Gap+
+ Wat- >> Art-
+ Res- >> Aski-
+ Nf- >> Woo-
+ Res- >> Woo-
+ Sn-, Art- >> Aski-
+ Win- >> Aski-
+ Mon- >> Aski-
+ Mon-, Res- >> Aski-
+ Res- >> Wact-
+ Res- >> Sact-
+ Res- >> Art-
+ Win+ >> Sact-
+ Fer- >> Woo-
+ Win- >> Wact-
+ Aski+ >> Fer-
+ Res- >> Wat-
+ Nf+ >> FaD+
+ Nf- >> FaD-
+ Bg+ >> Fer+
+ FaD+ >> Fer+
+ Fa+ >> Fer+
+ Wflo+ >> Fer+
+ Fd+ >> Fer+
+ Fer- >> Nf-
+ Fer- >> Bg-
+ Win- >> Art-
+ Nf+ >> Fd+
+ Nf- >> Fd-
+ Gap+ >> Fd-
+ Gap+ >> FaD-
+ Fer- >> Fd-
+ Fer- >> Wflo-
+ Fer-, Nf-, Wat-, Lak- >> Res-
+ Nf+  >> Gap-
+ Res-, Aski-, Sact-, Wact- >> Tou-
+ Aski-, Sact-, Wact-  >> Tou-
+ Fer-, Nf-, Wat-, Lak- >> Res-
+ Fer-, Nf-, Wat-, Lak- >> Tou-
+ Aski+ >> Sact-
+ Sact+ >> Aski-
+ Art+ >> Sact-
+ Sn+ >> Sact-
+ Nf+ >> Fer+
+ Tou- >> Art-
+ Tou- >> Wact-
+ Tou- >> Sact-
+ Fd- >> FaD-
+ Fd-, Wflo- >> Fa-
+
+rules:
+ Wat+, Win+, Tou+, Res+ >> Art+
+ Aski+ >> Tou+
+ Res+, Nf+ >> Woo+
+ Sact+ >> Tou+
+ Lak+, Tou+, Res+, Win- >> Sact+
+ Lak+ >> Tou+
+ Tou+ >> Bg-
+ Tou+ >> Fd-
+ Tou+ >> Wflo-
+ Tou+ >> Fa-
+ Tou+ >> FaD-
+ Win+ >> Sn+
+ Win+ >> Sn-
+ Mon+, Fer+ >> Wflo+
+ Nf+ >> Wflo+
+ Wflo+ >> Res+
+ Mon+ >> Tou+
+ Mon+ >> Res+
+ Mon+ >> Fa+
+ Lak+ >> Fa+
+ Nf+ >> Fa+
+ Gap+ >> Fa+
+ Mon+, Wflo+ >> Fa+
+ Nf+, Fd+ >> FaD+
+ Fer+ >> Bg+
+ Fer+ >> Fd+
+ Fer+ >> Wflo+
+ Gap+, Fer+ >> Wflo+
+ Res- >> Tou-
+ Bg+ >> Tou+
+ Mon+, Res+ >> Tou+
+ Wat+ >> Res+
+ Wact+ >> Tou+
+ Tou+ >> Fer-
+ Sact+ >> Fer-
+ Sact+ >> Fd-
+ Sact+ >> Wflo-
+ Sact+ >> Bg-
+ Wact+ >> Bg-
+ Wact+ >> Fer-
+ Wact+ >> Fd-
+ Wact+ >> Wflo-
+ Aski+ >> Fa-
+ Aski+ >> Fd-
+ Aski+ >> Wflo-
+ Aski+ >> Nf-
+ Aski+ >> Bg-
+ Aski+ >> FaD-
+ Fa+ >> Res+
+ Tou+ >> Nf-
+ FaD+ >> Res+
+ Res+ >> FaD-
+ Res+ >> Nf-
+ Lak+ >> Res+
+ Lak+ >> FaD+
+ Aski+ >> Res+
+ Wat+, Win+, Tou+, Res+, Sn- >> Art+
+ Art+ >> FaD-
+ Art+ >> Fd-
+ Win- >> Sn-
+ Win- >> Sn+
+ Sn+ >> Fa-
+ Sn+ >> Wflo-
+ Sn+ >> Fd-
+ Sn+ >> FaD-
+ Bg+ >> Fa+
+ Fa+ >> FaD-
+ FaD+ >> Fa-
+ Fa+ >> Wflo-
+ Res+ >> Fa+
+ Res+ >> Fa-
+ Fa+ >> Tou+ 
+ Fa+ >> Fd-
+ Fd+ >> Fa+
+ Wflo+ >> Fa+
+ Wact+ >> Fa-
+ Art+ >> Fa-
+ Sact+ >> Fa-
+ Tou+, Mon+, Res+ >> Sact+
+ Win-, Sn-, Fer+ >> Wflo+
+ Res+, Win+, Sn+ >> Wat+
+ Art+ >> Wflo-
+ Res+ >> Wflo+
+ Res+ >> Wflo-
+ Wflo+ >> Tou+
+ Nf+ >> Tou+ 
+ FaD+ >> Tou+
+ Fd+ >> Tou+
+ Fer+ >> Nf+
+ Res+ >> Nf+
+ Res+ >> FaD+
+ Res+ >> Fd-
+ Fd+ >> Res+
+ Nf+ >> Res+
+ Fd+ >> FaD+
+ FaD+ >> Fd-
+ Sn+, Res+ >> Wat+
+ Res+ >> Wat+
+ Bg+ >> Res+
+ Res+ >> Bg-
+ Res+ >> Bg+
+ Wact+ >> Res+
+ Wact+ >> FaD-
+ Sact+ >> FaD-
+ Sact+ >> Res+
+ Lak+, Tou+ >> Fa+
+ Res+, Win+, Sn+, Art+ >> Wat+
+ Res+, Win+, Art+ >> Wat+
+ FaD+ >> Wflo-
+ Wflo+ >> FaD+
+ Wflo+ >> Fd-
+ Fd+ >> Wflo-
+ Bg+ >> Wflo+
+ Fd+ >> Nf+
+ Win+ >> Win-
+ Win- >> Win+
+ Art+ >> Fer-
+ Mon+, Art+, Sn-, Win+, Res+ >> Aski+
+ Mon+, Sn+, Art-, Win+, Res+ >> Aski+
+ Mon+, Art+, Sn+, Win+, Res+ >> Aski+
+ Res+, Win+, Sn+, Art- >> Wact+
+ Res+, Win+, Sn-, Art+ >> Wact+
+ Res+, Win+, Sn+, Art+ >> Wact+
+ Lak+ >> Wflo+
+ Mon+, Art+, Win+, Res+, Tou+ >> Aski+
+ Sn+, Art+, Mon+, Win+, Res+, Tou+ >> Aski+
+ Sn+, Mon+, Win+, Res+, Tou+ >> Aski+
+ Nf+ >> Fa+
+ Nf+, Wflo+, Fd+ >> Fa+
+ Fer+ >> Res+
+ Sn+, Art-, Win+, Res+, Tou+ >> Wact+
+ Art+, Sn+, Win+, Res+, Tou+ >> Wact+
+ Art+, Sn-, Win+, Res+, Tou+ >> Wact+

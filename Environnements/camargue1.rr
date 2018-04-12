@@ -1,0 +1,238 @@
+EauNaturelle: 
+ Rh+: Rhone
+ RhE-: Rhone empoisonne
+ Ma+: Marais
+ MaE-: Eau empoisonnee du marais
+ Rdu+: Reserve dunaire en eau douce
+ EtgD+: Eau douce de l'etang
+ EtgDE-: Eau douce empoisonnee de l'etang
+ EtgS-: Eau salee de l'etang
+ LagD+: Eau douce de la lagune
+ LagDE-: Eau douce empoisonnee de la lagune
+ LagS+: Eau salee de la lagune
+ Med+: Mer mediterannee
+ NapS+: Nappe phreatique salee
+
+EauAnthropisee: 
+ DigF+: Digue au fleuve
+ Can+: Canaux
+ IrIn+: Reseau d'irrigation IN
+ Drai+: Drain
+ IrOut+: Eau d'irrigation OUT
+ IrOutE-: Eau d'irrigation OUT empoisonnee
+ DigM+: Digue à la mer
+ Pass+: Passes
+ Pert+: Pertuits
+
+Atmosphere: 
+ Plu-: Pluie et rosee
+ Mis+: Vent Mistral
+ Mar-: Vent Marin
+ Ete+: Ete
+ Hiv-: Hivers
+
+Sol: 
+ Dun+: Dunes
+ SoS-: Sols salins
+
+Anthropique: 
+ Hom+: Homme
+ Riz+: Riziere
+ Cult+: Culture
+ Elv+: Elevage
+ Pat+: Paturage
+ Sal+: Industrie saliniere
+ Patr+: Patrimoine
+ Tou+: Touriste, chasseur, pecheur
+
+Faune: 
+ FaD+: Faune dulçaquicole
+ FaL+: Faune lagunaire
+ FaM+: Faune marine
+ FaT+: Faune terrestre
+ FaMi+: Faune migratrice (avifaune)
+
+Flore: 
+ Pel+: Pelouse
+ San+: Sansouires
+ Fdu+: Flore dunaire
+ Ros+: Roseaux
+ Fpel+: Flore de pelouse
+
+rules:
+ #EauNaturelle
+ Rh- >> RhE-
+ Rh+, RhE-, Can- >> Ma+
+ Rh+, RhE+, Can- >> MaE+
+ Rh-, Ete+, Plu- >> Ma-,MaE-, FaMi-, Ros-
+ Can+, Ete+, Plu- >> Ma-,MaE-, FaMi-, Ros-
+ Plu+ >> Ma+
+ Ma- >> MaE-
+ IrIn+ >> Ma+
+ Dun- >> Rdu-, Fdu-
+ Dun+,Plu+ >> Rdu+
+ Ma+,MaE- >> EtgD+
+ Ma+, MaE- >> EtgD+, EtgDE-
+ Ma+, MaE+ >> EtgDE+
+ EtgD- >> EtgDE-
+ Mis+, EtgD+, EtgDE-, Pass- >> LagD+
+ Mis+, EtgD+, EtgDE-, Pass- >> LagD+,LagDE-
+ Mis+, EtgD+, EtgDE+, Pass- >> LagDE+
+ EtgD+ >> EtgS-
+ EtgS+ >> EtgD-, EtgDE-
+ Mis+, EtgS+, Pass- >> LagS+
+ Mis+, EtgS+, Pass- >> LagS+, LagDE-
+ LagS+, Mar+,Pass- >> EtgS+
+ LagD+, Mar+,Pass- >> EtgD+
+ LagD+, Mar+,Pass- >> EtgD+, EtgDE-
+ Med+, Pert- >> LagS+
+ NapS+ >> LagS+
+ Ete+, Med- >> LagS-, Sal-, FaL-
+ Ete+, Pert+ >> LagS-, Sal-, FaL-
+ LagD+ >> LagS-, Sal-, FaL-
+ LagS+ >> LagD-, FaL-
+ Med+,Plu-,Mar+ >> NapS+, LagS+
+ Med+,Plu-,Mis+ >> NapS+, LagS+
+ Plu+ >> NapS-
+ #EauAnthropisee
+ Hom+ >> DigF+
+ Hom- >> DigF-, Can-, IrIn-, Riz-, Cult-
+ DigF- >> Can-
+ Hom- >> Can-
+ Rh+, DigF+, Can- >> IrIn+
+ Rh- >> IrIn-, Riz-, Cult-
+ DigF- >> IrIn-, Riz-, Cult-
+ Can+ >> IrIn-, Riz-, Cult-
+ Hom- >> Drai-
+ Riz+, Ete+ >> Can-, Drai+
+ Riz+, Hiv+ >> Can+, IrIn-, Drai-
+ IrOut+, IrOutE-, Drai- >> Rh+
+ IrOut+, IrOutE+, Drai- >> RhE+
+ IrOut+,IrOutE-,Drai- >> EtgD+
+ IrOut+,IrOutE+,Drai- >> EtgDE+
+ Riz+ >> IrOut+
+ Riz+ >> IrOut-
+ Cult+ >> IrOut+
+ Cult+ >> IrOut-
+ Riz+, IrOut+ >> IrOutE+
+ Cult+, IrOut+ >> IrOutE+
+ Hom+ >> IrOutE-
+ Hom+ >> DigM+
+ Hom- >> DigM-, Pass-, Pert-
+ DigM- >> Pass-
+ Sal+, Ete+ >> Pass-, Pert+
+ DigM- >> Pert-
+ Sal+, Hiv+ >> Pass+, Pert-
+ #Sol
+ Med+,Hiv+,DigM- >> Dun-, Fdu-
+ Fdu-,Mis+, Dun+ >> Dun-, Fdu-
+ Fdu-,Mar+, Dun + >> Dun-, Fdu-
+ Mis+, Dun- >> Dun+
+ Mar+, Dun- >> Dun+
+ Tou+ >> Dun-
+ Med+,Mar+ >> SoS+, Cult-
+ Med+,Hiv+,DigM- >> SoS+, Cult-
+ NapS+ >> SoS+, Cult-
+ Riz+ >> SoS-
+ #Atmosphere
+ Ete+ >> Hiv-, FaMi-
+ Hiv+ >> Ete-
+ Ete+ >> Hiv+
+ Hiv+ >> Ete+
+ Plu+ >> Plu-
+ Plu- >> Plu+
+ Mar+ >> Mis+,Mar-
+ Mis+ >> Mar+,Mis-
+ #Anthropique
+ Riz-,Cult-,Sal-,Elv-,Tou- >> Hom-, Patr-
+ Hom+, SoS+, IrIn+, Cult- >> Riz+
+ Hom- >> Riz-
+ SoS- >> Riz-
+ IrIn- >> Riz-
+ Hiv+, Rh+, DigF- >> Cult-, Riz-
+ Hom+, SoS-,IrIn+,Riz- >> Cult+
+ Hom- >> Cult-
+ SoS+ >> Cult-
+ IrIn- >> Cult-
+ Med+,Hiv+,DigM- >> Cult-
+ LagS+, LagD- >> Sal+
+ Sal+ >> LagS-, LagD-
+ LagS- >> Sal-
+ Hom- >> Patr-
+ Fpel+ >> Patr+
+ San+ >> Patr+
+ Fdu+ >> Patr+
+ Elv+ >> Patr+
+ Patr+ >> Tou+
+ FaMi+ >> Tou+
+ FaD+ >> Tou+
+ FaM+ >> Tou+
+ FaL+ >> Tou+
+ FaT+ >> Tou+
+ Patr+ >> Tou+
+ Patr-, FaMi-, FaD-, FaM-,FaL-, FaT- >> Tou-
+ Hom+ >> Elv+
+ Hom- >> Elv-, Pat-
+ Pat- >> Elv-
+ Patr+ >> Elv+
+ Ete+, Elv+, Pel+ >> Pat+
+ Ete+,Elv+, Ma+ >> Pat+
+ Elv+, San+ >> Pat+
+ Elv- >> Pat-
+ Pel-, Ma-, San- >> Pat-, Elv-
+ #Faune
+ Hiv+, EtgD+, Ma+ >> FaMi+
+ Hiv+, EtgS+, Ma+ >> FaMi+
+ Hiv- >> FaMi-
+ EtgD-,EtgS- >> FaMi-
+ Ma- >> FaMi-
+ Tou+ >> FaMi-
+ Ma-, EtgD-, LagD- >> FaD-
+ Ma+ >> FaD+
+ EtgD+, EtgS- >> FaD+
+ LagD+, LagS- >> FaD+
+ Ma-, EtgS+, LagD- >> FaD-
+ Ma-,EtgD-,LagS+ >> FaD-
+ Ma-,EtgS+,LagS+ >> FaD-
+ MaE+, EtgS+, LagD- >> FaD-
+ MaE+, EtgD-, LagS+ >> FaD-
+ MaE+, EtgS+, LagS+ >> FaD-
+ Ma-,EtgDE+,LagDE- >> FaD-
+ Ma-,EtgDE+,LagS+ >> FaD-
+ MaE+,EtgDE+,LagD- >> FaD-
+ MaE+,EtgDE+,LagS+ >> FaD-
+ Ma-,EtgDE+,LagDE+ >> FaD-
+ MaE+,EtgDE+,LagDE+ >> FaD-
+ Tou+ >> FaD-
+ EtgS-,LagS- >> FaM-
+ EtgS+, EtgD- >> FaM+
+ LagS+, LagD- >> FaM+
+ EtgD+,LagS- >> FaM-
+ EtgD+,LagD+ >> FaM-
+ EtgS-,LagD+ >> FaM-
+ Tou+ >> FaM-
+ LagS+,LagD+ >> FaL+
+ LagS- >> FaL-
+ LagD- >> FaL-
+ Tou+ >> FaL-
+ Fpel-, Pat- >> FaT-
+ Fpel+ >> FaT+
+ Pat+ >> FaT+
+ Tou+ >> FaT-
+ #Flore
+ Ma+ >> Ros+
+ Ma- >> Ros-
+ Hom+ >> Ros-
+ Dun+, Rdu+ >> Fdu+
+ Dun- >> Fdu-
+ Rdu- >> Fdu-
+ Pel+, Pat- >> Pel-, Fpel-
+ Pel+ >> Riz+
+ Riz+ >> Pel-, Fpel-
+ Pel- >> Fpel-
+ Pel+,Plu+ >> Fpel+
+ Plu- >> Fpel-
+ FaT+ >> Fpel-
+ Elv+ >> San-
+ Cult+ >> San-
+ SoS+ >> San+
