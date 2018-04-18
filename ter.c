@@ -7,6 +7,9 @@ typedef struct environnement environnement;
 typedef struct agent agent;
 typedef struct regle regle;
 
+
+
+
 //Structure représentant un environnement
 struct environnement{
 	int nombre_agents;
@@ -30,6 +33,14 @@ struct regle{
 	agent* agents_droite[10];
 };
 
+int eql(char* a, char* b){
+	int i;
+	for(i=0; i<5; i++){
+		if(a[i] != b[i]) return 0;
+	}
+	return 1;
+}
+
 
 //Fonction lisant un fichier rr (environnement) et remplissant notre structure
 environnement recuperer_environnement(char* nom_fichier){
@@ -39,7 +50,7 @@ environnement recuperer_environnement(char* nom_fichier){
     	printf("Impossible d'ouvrir le fichier\n");
     	exit(EXIT_FAILURE);
     }
-    int i,ou = 0;
+    int i ,j ,ou = 0;
     char c;
     struct environnement env;
     env.nombre_agents = 0;
@@ -67,22 +78,25 @@ environnement recuperer_environnement(char* nom_fichier){
     } while (c != EOF);
     ou = 0;
     rewind(fichier);    
-    //printf("NbA: %d, NbR: %d\n", env.nombre_agents, env.nombre_regles);
 
 	//On stocke les agents
 	int compteur_agents = 0, dans_agents = 0;
     env.agents = malloc(env.nombre_agents*sizeof(agent));
-    env.regles = malloc(env.nombre_regles*sizeof(regle));
+	for(j=0; j<env.nombre_agents; j++){
+		for(i=0; i<5; i++){
+			env.agents[j].nom[i] = ' ';
+		}
+    }
     
     do 	{
   		c = fgetc(fichier);
- 		if(ou < 6 && (c == '+' || c == '-')) ou = -1;	
+ 		if(c == '+' || c == '-') ou = -1;	
  		else if(ou == -1 && c == ':'){
  			fseek(fichier, -2, SEEK_CUR);
  			do{
  				fseek(fichier, -2, SEEK_CUR);
  				c = fgetc(fichier);
- 			} while (c != ' ');
+ 			} while (c != ' ' && c != '\n');
  			c = fgetc(fichier);
  			do{
  				env.agents[compteur_agents].nom[dans_agents] = c;
@@ -99,13 +113,18 @@ environnement recuperer_environnement(char* nom_fichier){
  		else if(c == 'e' && ou == 3) ou++;
  		else if(c == 's' && ou == 4) ou++;
  		else if(c == ':' && ou == 5) ou++;
+ 		else if(ou < 6) ou = 0;
     } while (ou != 6);
     
     //On stocke les regles
+    env.regles = malloc(env.nombre_regles*sizeof(regle));
+    char temp[5];
+    for(i=0; i<5; i++){
+    	temp[i] = ' ';
+    }
+    int dans_regles, compteur_regles = 0;
     ou = 0;
     dans_agents = 0;
-    char temp[5];
-    int dans_regles, compteur_regles = 0;
     do{
     	c = fgetc(fichier);
     	if(c == '>' & (ou == 0 || ou == 1)) ou++;
@@ -121,7 +140,11 @@ environnement recuperer_environnement(char* nom_fichier){
  				if(c == ','){
  					dans_regles++;
  					dans_agents = 0;
+ 					for(i=0; i<5; i++){
+    					temp[i] = ' ';
+  					}
  				}
+ 				// c est une lettre
  				else if((c >= 65 && c <= 90) || (c >= 97 && c >= 122)){
  					do{
  						temp[dans_agents] = c;
@@ -131,21 +154,27 @@ environnement recuperer_environnement(char* nom_fichier){
  					if(c == '+') env.regles[compteur_regles].negatif_gauche[dans_regles] = 0;
  					else if(c == '-') env.regles[compteur_regles].negatif_gauche[dans_regles] = 1;
  					for(i = 0; i < env.nombre_agents; i++){
- 						if(strcmp(env.agents[i].nom, temp)==0) env.regles[compteur_regles].agents_gauche[dans_regles] = &env.agents[i];
- 					}
- 					
- 				}
- 				
+ 						if(eql(env.agents[i].nom, temp)) env.regles[compteur_regles].agents_gauche[dans_regles] = &env.agents[i];
+ 					}	
+ 				}				
  			} while (c != '>');
  			fseek(fichier, 1, SEEK_CUR);
  			dans_regles=0;
+ 			dans_agents=0;
+ 			for(i=0; i<5; i++){
+    			temp[i] = ' ';
+  			}
  			//droite
  			do{
  				c = fgetc(fichier);
  				if(c == ','){
  					dans_regles++;
  					dans_agents = 0;
+ 					for(i=0; i<5; i++){
+    					temp[i] = ' ';
+  					}
  				}
+ 				// c est une lettre
  				else if((c >= 65 && c <= 90) || (c >= 97 && c >= 122)){
  					do{
  						temp[dans_agents] = c;
@@ -155,36 +184,27 @@ environnement recuperer_environnement(char* nom_fichier){
  					if(c == '+') env.regles[compteur_regles].negatif_droite[dans_regles] = 0;
  					else if(c == '-') env.regles[compteur_regles].negatif_droite[dans_regles] = 1;
  					for(i = 0; i < env.nombre_agents; i++){
- 						if(strcmp(env.agents[i].nom, temp)==0) env.regles[compteur_regles].agents_droite[dans_regles] = &env.agents[i];
- 					}
- 					
+ 						if(eql(env.agents[i].nom, temp)) env.regles[compteur_regles].agents_droite[dans_regles] = &env.agents[i];
+ 					}	
  				}
- 				
  			} while (c != '\n');
- 			
+ 			dans_regles=0;
+ 			dans_agents=0;
+ 			for(i=0; i<5; i++){
+    			temp[i] = ' ';
+  			}
  			compteur_regles++;
  			ou = 0;	
     	}
     
     } while (c != EOF);
-    
-    
-    
     fclose(fichier);
     return env;
 }
     
- /*   c = fgetc(fichier)
- 	char* fgets(char* chaine, int nbreDeCaracteresALire, FILE* pointeurSurFichier);
- 	
- 	ftell
- 	int fseek(FILE* pointeurSurFichier, long deplacement, int origine); SEEK_CUR
- 	SEEK_SET
-    rewind(fichier)
-    
-    while (c != EOF)
- */
+void creer_mod(environnement env1, environnement env2){
 
+}
 
 int main(int argc, char* argv[]){
 	if(argc != 3){
@@ -192,14 +212,16 @@ int main(int argc, char* argv[]){
 		exit(1);
 	}
 	
+
+	
 	environnement env1 = recuperer_environnement(argv[1]);
+	environnement env2 = recuperer_environnement(argv[2]);
+	creer_mod(env1, env2);
 	
-	printf("%c %c %c\n", env1.agents[0].nom[0], env1.agents[0].nom[1], env1.agents[0].nom[4]);
-	printf("%d\n", env1.regles[0].negatif_droite[2]);
-	//printf("%c %d\n", env1.regles[0].agents_gauche[0]->nom[0], env1.regles[0].negatif_gauche[0]);
-	//environnement env2 = recuperer_environnement(argv[2]);
-	
-	
+	free(env1.agents);
+	free(env1.regles);
+	free(env2.agents);
+	free(env2.regles);
 	
 	return 0;
 }
