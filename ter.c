@@ -49,7 +49,7 @@ environnement recuperer_environnement(char* nom_fichier){
 	FILE* fichier = NULL;
     fichier = fopen(nom_fichier, "r");
     if(fichier == NULL){
-    	printf("Impossible d'ouvrir le fichier\n");
+    	printf("Impossible d'ouvrir le fichier d'environnement\n");
     	exit(EXIT_FAILURE);
     }
     int i ,j ,ou = 0;
@@ -291,24 +291,127 @@ void liberer_environnement(environnement env){
     free(env.regles);
 }
     
-void creer_mod(environnement env1, environnement env2){
-	
-	
+int taille(int* partie){
+	int i=0;
+	while(partie[i] != -1){
+		i++;
+	}
+	return i;
+}    
+    
+void creer_mod(environnement env1, environnement env2, char* nom_fichier){
+	FILE* fichier = NULL;
+    fichier = fopen(nom_fichier, "w");
+    if(fichier == NULL){
+    	printf("Impossible d'ouvrir le fichier pour l'écriture du modèle\n");
+    	exit(EXIT_FAILURE);
+    }
+    
+    int i,j,k,l;
+    fprintf(fichier, "dvar boolean X[0..%d][0..%d];\n", env2.nombre_agents*2 - 1, env1.nombre_agents*2 - 1);
+    fprintf(fichier, "dvar boolean Y[0..%d][0..%d];\n", env2.nombre_regles-1, env1.nombre_regles-1);
+    for(j=0; j<env2.nombre_regles; j++){
+    	for(i=0; i<env1.nombre_regles; i++){
+    		k = (taille(env1.regles[i].negatif_gauche)*taille(env2.regles[j].negatif_gauche)) + (taille(env1.regles[i].negatif_droite)*taille(env2.regles[j].negatif_droite)) - 1;
+    		fprintf(fichier, "dvar boolean S%d[0..%d];\n", i+(j*env1.nombre_regles), k);
+    	}
+    }
+    fprintf(fichier, "dvar int S;\nmaximize S;\n\nsubject to{\n	//Lignes agents\n");
+    
+    for(j=0; j<env2.nombre_agents*2; j++){
+    	fprintf(fichier,"	");
+    	for(i=0; i<env1.nombre_agents*2; i++){
+    		if(i != 0) fprintf(fichier, " + X[%d][%d]", j, i);
+    		else fprintf(fichier, "X[%d][%d]", j, i);
+    	}
+    	fprintf(fichier," <= 1;\n");
+    }
+    
+    fprintf(fichier,"\n	//Colonnes agents\n");
+    for(i=0; i<env1.nombre_agents*2; i++){
+    fprintf(fichier,"	");
+    	for(j=0; j<env2.nombre_agents*2; j++){
+    		if(j != 0) fprintf(fichier, " + X[%d][%d]", j, i);
+    		else fprintf(fichier, "X[%d][%d]", j, i);
+    	}
+    	fprintf(fichier," <= 1;\n");
+    }
+    
+    fprintf(fichier,"\n	//Egalite des croix agents\n");
+    for(j=0; j<env2.nombre_agents*2; j=j+2){
+    	for(i=0; i<env1.nombre_agents*2; i=i+2){
+    		fprintf(fichier,"	X[%d][%d] == X[%d][%d];\n", j, i, j+1, i+1);
+    		fprintf(fichier,"	X[%d][%d] == X[%d][%d];\n", j, i+1, j+1, i);
+    	}	
+    	fprintf(fichier,"\n");
+    }
+    
+    fprintf(fichier,"	//Lignes regles\n");
+    for(j=0; j<env2.nombre_regles; j++){
+    	fprintf(fichier,"	");
+    	for(i=0; i<env1.nombre_regles; i++){
+    		if(i != 0) fprintf(fichier, " + Y[%d][%d]", j, i);
+    		else fprintf(fichier, "Y[%d][%d]", j, i);
+    	}   
+    	fprintf(fichier," <= 1;\n");
+   	}
+   	
+   	fprintf(fichier,"\n	//Colonnes regles\n");
+    for(i=0; i<env1.nombre_regles; i++){
+    	fprintf(fichier,"	");
+    	for(j=0; j<env2.nombre_regles; j++){
+		 	if(j != 0) fprintf(fichier, " + Y[%d][%d]", j, i);
+				else fprintf(fichier, "Y[%d][%d]", j, i);
+			}   
+			fprintf(fichier," <= 1;\n");
+   	}
+   	
+   	fprintf(fichier,"\n	//Fonction d'evaluation\n");
+   	for(j=0; j<env2.nombre_regles; j++){
+	   	for(i=0; i<env1.nombre_regles; i++){
+	   		k = (taille(env1.regles[i].negatif_gauche)*taille(env2.regles[j].negatif_gauche)) + (taille(env1.regles[i].negatif_droite)*taille(env2.regles[j].negatif_droite)) - 1;
+	   		for(l=0; l<k;l++){
+	   			fprintf(fichier,"	S1[0] <= Y[0][0];	S1[0] <= X[1][0];	S1[0] >= Y[0][0] + X[1][0] - 1;");
+	   			fprintf(fichier,"\n");
+	   		}
+	   		fprintf(fichier,"\n");
+	   	}
+	   	fprintf(fichier,"\n");
+	}
+   	
+   	
+   	
+	fclose(fichier);
+		
+	if(debug){
+		fichier = fopen(nom_fichier, "r");
+		if(fichier == NULL){
+			printf("Impossible d'ouvrir le fichier pour le lecture du modèle\n");
+			exit(EXIT_FAILURE);
+		}
+		char c;
+		c=fgetc(fichier);
+		do{
+			printf("%c", c);
+			c = fgetc(fichier);			
+		} while(c != EOF);
+		fclose(fichier);
+	}
 }
 
 
 
 
 int main(int argc, char* argv[]){
-	if(argc != 3){
-		printf("Utilisation: ./ter fichier1 fichier2\n");
+	if(argc != 4){
+		printf("Utilisation: ./ter fichier1 fichier2 sortie.mod\n");
 		exit(1);
 	}
 	
 	
 	environnement env1 = recuperer_environnement(argv[1]);
 	environnement env2 = recuperer_environnement(argv[2]);
-	creer_mod(env1, env2);
+	creer_mod(env1, env2, argv[3]);
 	liberer_environnement(env1);
 	liberer_environnement(env2);
 	
