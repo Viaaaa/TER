@@ -43,6 +43,16 @@ int eql(char* a, char* b){
 	return 1;
 }
 
+int min(int a, int b){
+	if(a <= b) return a;
+	return b;
+}
+
+int abs(int a){
+	if(a >= 0) return a;
+	return -a;
+}
+
 
 //Fonction lisant un fichier rr (environnement) et remplissant notre structure
 environnement recuperer_environnement(char* nom_fichier){
@@ -60,7 +70,12 @@ environnement recuperer_environnement(char* nom_fichier){
     //Boucle qui compte le nombre d'agents et de règles
     do 	{
   		c = fgetc(fichier);
- 		if(ou < 6 && (c == '+' || c == '-')) ou = -1;	
+  		if(c == '#'){
+  			do{
+  				c = fgetc(fichier);
+  			} while (c != '\n');
+  		}
+ 		else if(ou < 6 && (c == '+' || c == '-')) ou = -1;	
  		else if(ou == -1 && c == ':'){
  			env.nombre_agents++;
  			ou = 0;
@@ -76,8 +91,9 @@ environnement recuperer_environnement(char* nom_fichier){
  			if(c == '>') env.nombre_regles++;
  			ou = 6;		
  		}
- 		else if(ou < 6) ou = 0;
+ 		else if(ou < 6 && c != ' ') ou = 0;
     } while (c != EOF);
+    
     if(debug) printf("\nNombre d'agents: %d  Nombre de règles: %d\n", env.nombre_agents, env.nombre_regles);
     ou = 0;
     rewind(fichier);    
@@ -95,16 +111,22 @@ environnement recuperer_environnement(char* nom_fichier){
 		}
     }
     
-    do 	{
+    do 	{  	
   		c = fgetc(fichier);
- 		if(c == '+' || c == '-') ou = -1;	
- 		else if(ou == -1 && c == ':'){
- 			fseek(fichier, -2, SEEK_CUR);
+ 		if(c == '#'){
+  			do{
+  				c = fgetc(fichier);
+  			} while (c != '\n');
+  		}
+ 		else if(c == '+' || c == '-') ou = -1;	
+ 		else if(ou == -1 && c == ':'){	
  			do{
  				fseek(fichier, -2, SEEK_CUR);
  				c = fgetc(fichier);
- 			} while (c != ' ' && c != '\n');
- 			c = fgetc(fichier);
+ 			} while (c != '\n');
+ 			do{
+ 				c = fgetc(fichier);
+ 			} while(c == ' ');
  			do{
  				env.agents[compteur_agents].nom[dans_agents] = c;
  				dans_agents++;
@@ -113,14 +135,14 @@ environnement recuperer_environnement(char* nom_fichier){
  			dans_agents = 0;
  			compteur_agents++;
  			ou = 0;
- 		}	
+ 		}
  		else if(c == 'r') ou++;
  		else if(c == 'u' && ou == 1) ou++;
  		else if(c == 'l' && ou == 2) ou++;
  		else if(c == 'e' && ou == 3) ou++;
  		else if(c == 's' && ou == 4) ou++;
  		else if(c == ':' && ou == 5) ou++;
- 		else if(ou < 6) ou = 0;
+ 		else if(ou < 6 && c != ' ') ou = 0;
     } while (ou != 6);
     
     if(debug){
@@ -161,7 +183,12 @@ environnement recuperer_environnement(char* nom_fichier){
     
     do{
     	c = fgetc(fichier);
-    	if(c == '>' & (ou == 0 || ou == 1)) ou++;
+    	if(c == '#'){
+  			do{
+  				c = fgetc(fichier);
+  			} while (c != '\n');
+  		}
+ 		else if(c == '>' & (ou == 0 || ou == 1)) ou++;
     	if(ou == 2){
     		do{
  				fseek(fichier, -2, SEEK_CUR);
@@ -299,6 +326,28 @@ int taille(int* partie){
 	return i;
 }    
     
+//Place à gauche de l'agent l dans la règle i
+int place_gauche(environnement env, int l, int i){
+	int j = 0;
+	while(&env.agents[j] != env.regles[i].agents_gauche[l]){
+		j++;
+	} 
+	if(env.regles[i].negatif_gauche[l]) j = 2*j + 1;
+	else j = 2*j;
+	return j;
+}
+
+//Place à droite de l'agent l dans la règle i
+int place_droite(environnement env, int l, int i){
+	int j = 0;
+	while(&env.agents[j] != env.regles[i].agents_droite[l]){
+		j++;
+	} 
+	if(env.regles[i].negatif_droite[l]) j = 2*j + 1;
+	else j = 2*j;
+	return j;
+}
+    
 void creer_mod(environnement env1, environnement env2, char* nom_fichier){
 	FILE* fichier = NULL;
     fichier = fopen(nom_fichier, "w");
@@ -307,7 +356,7 @@ void creer_mod(environnement env1, environnement env2, char* nom_fichier){
     	exit(EXIT_FAILURE);
     }
     
-    int i,j,k,l;
+    int i,j,k,l,m;
     fprintf(fichier, "dvar boolean X[0..%d][0..%d];\n", env2.nombre_agents*2 - 1, env1.nombre_agents*2 - 1);
     fprintf(fichier, "dvar boolean Y[0..%d][0..%d];\n", env2.nombre_regles-1, env1.nombre_regles-1);
     for(j=0; j<env2.nombre_regles; j++){
@@ -369,24 +418,53 @@ void creer_mod(environnement env1, environnement env2, char* nom_fichier){
    	fprintf(fichier,"\n	//Fonction d'evaluation\n");
    	for(j=0; j<env2.nombre_regles; j++){
 	   	for(i=0; i<env1.nombre_regles; i++){
-	   		k = (taille(env1.regles[i].negatif_gauche)*taille(env2.regles[j].negatif_gauche)) + (taille(env1.regles[i].negatif_droite)*taille(env2.regles[j].negatif_droite)) - 1;
-	   		for(l=0; l<k;l++){
-	   			fprintf(fichier,"	S1[0] <= Y[0][0];	S1[0] <= X[1][0];	S1[0] >= Y[0][0] + X[1][0] - 1;");
-	   			fprintf(fichier,"\n");
+	   		//Gauche
+	   		for(l=0; l < taille(env2.regles[j].negatif_gauche); l++){
+	   			for(k=0; k < taille(env1.regles[i].negatif_gauche); k++){
+		   			fprintf(fichier,"	S%d[%d] <= Y[%d][%d];	S%d[%d] <= X[%d][%d];	S%d[%d] >= Y[%d][%d] + X[%d][%d] - 1;",
+		   			 i+(j*env1.nombre_regles), k+(l*taille(env1.regles[i].negatif_gauche)), j, i,
+		   			 i+(j*env1.nombre_regles), k+(l*taille(env1.regles[i].negatif_gauche)), place_gauche(env2, l, j), place_gauche(env1, k, i),		   			 
+		   			 i+(j*env1.nombre_regles), k+(l*taille(env1.regles[i].negatif_gauche)), j, i, place_gauche(env2, l, j), place_gauche(env1, k, i));
+		   			fprintf(fichier,"\n");
+		   		}
+	   		}
+	   		m = taille(env2.regles[j].negatif_gauche)*taille(env1.regles[i].negatif_gauche);
+	   		//Droite
+	   		for(l=0; l < taille(env2.regles[j].negatif_droite); l++){
+	   			for(k=0; k < taille(env1.regles[i].negatif_droite); k++){
+		   			fprintf(fichier,"	S%d[%d] <= Y[%d][%d];	S%d[%d] <= X[%d][%d];	S%d[%d] >= Y[%d][%d] + X[%d][%d] - 1;",
+		   			 i+(j*env1.nombre_regles), k+(l*taille(env1.regles[i].negatif_droite))+m, j, i,
+		   			 i+(j*env1.nombre_regles), k+(l*taille(env1.regles[i].negatif_droite))+m, place_droite(env2, l, j), place_droite(env1, k, i),		   			 
+		   			 i+(j*env1.nombre_regles), k+(l*taille(env1.regles[i].negatif_droite))+m, j, i, place_droite(env2, l, j), place_droite(env1, k, i));
+		   			fprintf(fichier,"\n");
+		   		}
 	   		}
 	   		fprintf(fichier,"\n");
 	   	}
-	   	fprintf(fichier,"\n");
 	}
    	
-   	
+   	fprintf(fichier,"	S == ");
+   	for(j=0; j<env2.nombre_regles; j++){
+	   	for(i=0; i<env1.nombre_regles; i++){
+	   		k = (taille(env1.regles[i].negatif_gauche)*taille(env2.regles[j].negatif_gauche)) + (taille(env1.regles[i].negatif_droite)*taille(env2.regles[j].negatif_droite));
+	   		for(l=0; l < k; l++){
+	   			if(i != 0 || j != 0 || l != 0) fprintf(fichier," + 2*S%d[%d]", i+(j*env1.nombre_regles), l);
+	   			else fprintf(fichier,"2*S%d[%d]", i+(j*env1.nombre_regles), l);
+	   		}
+	   		k = min(taille(env1.regles[i].negatif_gauche), taille(env2.regles[j].negatif_gauche)) + abs(taille(env1.regles[i].negatif_gauche) - taille(env2.regles[j].negatif_gauche))
+	   		 + min(taille(env1.regles[i].negatif_droite), taille(env2.regles[j].negatif_droite)) + abs(taille(env1.regles[i].negatif_droite) - taille(env2.regles[j].negatif_droite));
+	   		fprintf(fichier," - %d * Y[%d][%d]\n	  ", k, j, i);
+   		}
+   		
+   	}
+   	fprintf(fichier,"\n}\n");
    	
 	fclose(fichier);
 		
 	if(debug){
 		fichier = fopen(nom_fichier, "r");
 		if(fichier == NULL){
-			printf("Impossible d'ouvrir le fichier pour le lecture du modèle\n");
+			printf("Impossible d'ouvrir le fichier pour la lecture du modèle\n");
 			exit(EXIT_FAILURE);
 		}
 		char c;
@@ -410,7 +488,7 @@ int main(int argc, char* argv[]){
 	
 	
 	environnement env1 = recuperer_environnement(argv[1]);
-	environnement env2 = recuperer_environnement(argv[2]);
+	environnement env2 = recuperer_environnement(argv[2]);	
 	creer_mod(env1, env2, argv[3]);
 	liberer_environnement(env1);
 	liberer_environnement(env2);
