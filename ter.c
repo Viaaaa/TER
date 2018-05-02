@@ -188,7 +188,7 @@ environnement recuperer_environnement(char* nom_fichier){
   				c = fgetc(fichier);
   			} while (c != '\n');
   		}
- 		else if(c == '>' & (ou == 0 || ou == 1)) ou++;
+ 		else if(c == '>' && (ou == 0 || ou == 1)) ou++;
     	if(ou == 2){
     		do{
  				fseek(fichier, -2, SEEK_CUR);
