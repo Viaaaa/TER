@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <cplex.h>
 
 
 int debug = 1;
@@ -457,7 +458,7 @@ void creer_mod(environnement env1, environnement env2, char* nom_fichier){
    		}
    		
    	}
-   	fprintf(fichier,"\n}\n");
+   	fprintf(fichier,";\n}\n");
    	
 	fclose(fichier);
 		
