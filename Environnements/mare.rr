@@ -4,12 +4,6 @@ nodes:
     PP+  : Poisson piscivore
     PI+  : Poisson insectivore
 
-# constraints:
-#     M- >> PP-, PI- # Sans mare, il n'y a pas de poisson 
-
-use "std.hld" :
-    PP, PI live in M
-
 rules :
     # Processus climatiques
     Ete+ >>  M- #  En été, la mare s'assèche
